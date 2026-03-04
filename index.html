@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PropLeads — Sistema de Captación Digital para Inmobiliarias CDMX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ====================================================================
+   RESET & CUSTOM PROPERTIES
+   ==================================================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+
+:root{
+  /* Colors */
+  --bg:          #07080a;
+  --surface:     #0e1014;
+  --surface-2:   #141619;
+  --border:      rgba(255,255,255,.07);
+  --border-gold: rgba(198,161,76,.28);
+  --white:       #f5f4f0;
+  --muted:       #8a8880;
+  --gold:        #c6a14c;
+  --gold-lt:     #e2c47a;
+  --gold-dim:    rgba(198,161,76,.12);
+  --green:       #3ecf6e;
+  --radius-sm:   8px;
+  --radius:      14px;
+  --radius-lg:   22px;
+  /* Typography */
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'Outfit', system-ui, sans-serif;
+  /* Motion */
+  --ease:   cubic-bezier(.25,.46,.45,.94);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--white);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+
+/* ====================================================================
+   UTILITY
+   ==================================================================== */
+.container{width:min(1180px,92%);margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.tag{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-size:.7rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);
+  border:1px solid var(--border-gold);
+  padding:.32rem .9rem;border-radius:999px;
+  margin-bottom:1.4rem;
+}
+.tag::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+/* Grain overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.028;
+}
+
+/* ====================================================================
+   SCROLL REVEAL
+   ==================================================================== */
+.reveal{opacity:0;transform:translateY(38px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-38px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal-l.in{opacity:1;transform:none}
+.reveal-r{opacity:0;transform:translateX(38px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal-r.in{opacity:1;transform:none}
+.stagger>*{opacity:0;transform:translateY(30px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.stagger.in>*:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger.in>*:nth-child(2){opacity:1;transform:none;transition-delay:.1s}
+.stagger.in>*:nth-child(3){opacity:1;transform:none;transition-delay:.2s}
+.stagger.in>*:nth-child(4){opacity:1;transform:none;transition-delay:.3s}
+.stagger.in>*:nth-child(5){opacity:1;transform:none;transition-delay:.4s}
+
+/* ====================================================================
+   BUTTONS
+   ==================================================================== */
+.btn{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-size:.88rem;font-weight:500;letter-spacing:.04em;
+  padding:.9rem 1.9rem;border-radius:999px;
+  border:none;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+}
+.btn svg{flex-shrink:0;transition:transform .25s var(--ease)}
+.btn:hover svg{transform:translateX(3px)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
+  color:#07080a;
+  box-shadow:0 6px 28px rgba(198,161,76,.32);
+}
+.btn-primary:hover{box-shadow:0 12px 40px rgba(198,161,76,.48)}
+
+.btn-outline{
+  background:transparent;color:var(--white);
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(6px);
+}
+.btn-outline:hover{border-color:rgba(255,255,255,.48)}
+
+.btn-lg{font-size:.95rem;padding:1.05rem 2.2rem}
+.btn-full{width:100%;justify-content:center}
+
+/* ====================================================================
+   HEADER
+   ==================================================================== */
+#hdr{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  padding:1.3rem 0;
+  transition:background .4s,backdrop-filter .4s,border-color .4s,padding .35s;
+  border-bottom:1px solid transparent;
+}
+#hdr.scrolled{
+  background:rgba(7,8,10,.78);
+  backdrop-filter:blur(22px) saturate(160%);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  border-color:var(--border);
+  padding:.85rem 0;
+}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
+.logo{font-family:var(--serif);font-size:1.45rem;font-weight:500;letter-spacing:.01em}
+.logo span{color:var(--gold)}
+.hdr-nav{display:none;align-items:center;gap:1.8rem}
+@media(min-width:860px){.hdr-nav{display:flex}}
+.hdr-nav a{font-size:.82rem;font-weight:400;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.hdr-nav a:hover{color:var(--white)}
+.hdr-cta{display:none}
+@media(min-width:860px){.hdr-cta{display:inline-flex}}
+
+/* Hamburger */
+.ham{display:flex;flex-direction:column;gap:5px;padding:6px;cursor:pointer}
+.ham span{display:block;width:22px;height:1.5px;background:var(--white);border-radius:2px;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+@media(min-width:860px){.ham{display:none}}
+
+/* Mobile menu */
+.mob-menu{
+  position:fixed;inset:0;z-index:850;
+  background:rgba(7,8,10,.96);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease);
+}
+.mob-menu.open{opacity:1;pointer-events:all}
+.mob-menu a{font-family:var(--serif);font-size:2.2rem;font-weight:400;color:var(--white);transition:color .2s}
+.mob-menu a:hover{color:var(--gold)}
+
+/* ====================================================================
+   HERO
+   ==================================================================== */
+#hero{
+  position:relative;min-height:100svh;
+  display:flex;align-items:center;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85&auto=format&fit=crop') center 35%/cover no-repeat;
+  transform:scale(1.06);
+  transition:transform 9s var(--ease);
+}
+#hero.loaded .hero-bg{transform:scale(1)}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(7,8,10,.85) 0%,rgba(7,8,10,.6) 55%,rgba(7,8,10,.92) 100%);
+}
+.hero-content{
+  position:relative;z-index:1;
+  padding:9rem 0 5rem;
+  max-width:780px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.74rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(245,244,240,.65);
+  border:1px solid rgba(255,255,255,.12);
+  padding:.38rem 1rem;border-radius:999px;
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(8px);
+  margin-bottom:1.8rem;
+  opacity:0;animation:fadeUp .8s .25s var(--ease) forwards;
+}
+.hero-badge .live{width:7px;height:7px;border-radius:50%;background:var(--green);animation:livePulse 2s infinite}
+.hero-h1{
+  font-family:var(--serif);
+  font-size:clamp(2.6rem,6.2vw,5rem);
+  font-weight:400;line-height:1.09;letter-spacing:-.01em;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .85s .42s var(--ease) forwards;
+}
+.hero-h1 em{font-style:italic;color:var(--gold-lt)}
+.hero-sub{
+  font-size:clamp(.95rem,1.8vw,1.1rem);font-weight:300;line-height:1.75;
+  color:rgba(245,244,240,.68);max-width:530px;
+  margin-bottom:2.6rem;
+  opacity:0;animation:fadeUp .85s .58s var(--ease) forwards;
+}
+.hero-actions{
+  display:flex;flex-wrap:wrap;gap:.9rem;
+  opacity:0;animation:fadeUp .85s .74s var(--ease) forwards;
+}
+.hero-scroll-cue{
+  position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);
+  z-index:1;display:flex;flex-direction:column;align-items:center;gap:.6rem;
+  opacity:0;animation:fadeIn 1s 1.3s var(--ease) forwards;
+}
+.hero-scroll-cue span{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.scroll-wire{width:1px;height:44px;background:linear-gradient(to bottom,var(--muted),transparent);animation:wireAnim 2.2s 1.6s ease-in-out infinite}
+
+/* ====================================================================
+   STATS BAR
+   ==================================================================== */
+#stats{
+  background:var(--surface);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:3.2rem 0;
+}
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:2rem;
+  text-align:center;
+}
+@media(min-width:640px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+.stat-val{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,5vw,3.4rem);
+  font-weight:400;color:var(--gold);line-height:1;
+}
+.stat-lbl{font-size:.78rem;font-weight:400;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:.5rem}
+
+/* ====================================================================
+   SECTION COMMONS
+   ==================================================================== */
+section{padding:clamp(4.5rem,9vw,8rem) 0}
+.sec-head{text-align:center;margin-bottom:clamp(3rem,5.5vw,4.5rem)}
+.sec-title{
+  font-family:var(--serif);
+  font-size:clamp(1.9rem,4.2vw,3.2rem);
+  font-weight:400;line-height:1.14;letter-spacing:-.01em;
+}
+.sec-title em{font-style:italic;color:var(--gold-lt)}
+.sec-sub{
+  font-size:.97rem;font-weight:300;line-height:1.72;
+  color:var(--muted);margin-top:.9rem;
+  max-width:500px;margin-inline:auto;
+}
+
+/* ====================================================================
+   COMO FUNCIONA — PROCESS TIMELINE
+   ==================================================================== */
+#como{background:var(--surface)}
+.process-wrap{position:relative;max-width:860px;margin-inline:auto}
+/* vertical line */
+.process-wrap::before{
+  content:'';position:absolute;top:0;bottom:0;left:22px;
+  width:1px;background:linear-gradient(to bottom,var(--gold),rgba(198,161,76,.08));
+}
+@media(min-width:700px){
+  .process-wrap::before{left:50%;transform:translateX(-50%)}
+}
+.proc-item{
+  display:flex;gap:1.4rem;
+  margin-bottom:2.6rem;
+  padding-left:62px;
+  position:relative;
+}
+@media(min-width:700px){
+  .proc-item{padding:0;width:44%;margin-bottom:3rem}
+  .proc-item:nth-child(odd){margin-left:0}
+  .proc-item:nth-child(even){margin-left:56%}
+}
+.proc-dot{
+  position:absolute;left:10px;top:.4rem;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 5px rgba(198,161,76,.1);
+  flex-shrink:0;z-index:1;
+}
+@media(min-width:700px){
+  .proc-dot{left:50%;transform:translateX(calc(-50% + 0px));position:absolute}
+  /* offset per side */
+  .proc-item:nth-child(odd) .proc-dot{left:calc(100% + 1.35rem);transform:translateX(-50%)}
+  .proc-item:nth-child(even) .proc-dot{left:calc(-1.35rem - 13px);transform:translateX(-50%)}
+}
+.proc-dot-inner{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.proc-card{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.7rem;flex:1;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+}
+.proc-card:hover{border-color:var(--border-gold);transform:translateY(-4px);box-shadow:0 16px 44px rgba(0,0,0,.35)}
+.proc-step{font-size:.68rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.proc-card h3{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:.5rem}
+.proc-card p{font-size:.86rem;font-weight:300;line-height:1.65;color:var(--muted)}
+
+/* ====================================================================
+   DIFERENCIADORES
+   ==================================================================== */
+#dif{background:var(--bg)}
+.dif-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1.2rem;
+}
+@media(min-width:580px){.dif-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.dif-grid{grid-template-columns:repeat(3,1fr)}}
+.dif-card{
+  background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:2rem 1.8rem;position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  cursor:default;
+}
+.dif-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  opacity:0;transition:opacity .35s;
+}
+.dif-card:hover{border-color:var(--border-gold);transform:translateY(-5px);box-shadow:0 20px 52px rgba(0,0,0,.4)}
+.dif-card:hover::before{opacity:1}
+.dif-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:var(--gold-dim);border:1px solid var(--border-gold);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.2rem;font-size:1.25rem;
+}
+.dif-card h3{font-family:var(--serif);font-size:1.15rem;font-weight:400;margin-bottom:.55rem}
+.dif-card p{font-size:.85rem;font-weight:300;line-height:1.65;color:var(--muted)}
+.dif-badge{
+  display:inline-block;margin-top:1rem;
+  font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);border:1px solid var(--border-gold);
+  padding:.26rem .7rem;border-radius:999px;
+}
+
+/* ====================================================================
+   FORM SECTION
+   ==================================================================== */
+#formulario{background:var(--surface);position:relative;overflow:hidden}
+#formulario::before{
+  content:'';position:absolute;top:-250px;right:-250px;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(198,161,76,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.form-grid{
+  display:grid;grid-template-columns:1fr;gap:3.5rem;align-items:start;
+}
+@media(min-width:860px){.form-grid{grid-template-columns:1fr 1fr}}
+.form-info{padding-top:1rem}
+.form-info h2{font-family:var(--serif);font-size:clamp(1.8rem,3.8vw,2.8rem);font-weight:400;line-height:1.15;margin-bottom:1.2rem}
+.form-info h2 em{font-style:italic;color:var(--gold-lt)}
+.form-info p{font-size:.95rem;font-weight:300;line-height:1.75;color:rgba(245,244,240,.65);margin-bottom:1rem}
+.form-perks{list-style:none;margin-top:1.5rem;display:flex;flex-direction:column;gap:.8rem}
+.form-perks li{display:flex;align-items:flex-start;gap:.75rem;font-size:.88rem;font-weight:300;color:rgba(245,244,240,.75)}
+.form-perks li::before{content:'✦';color:var(--gold);font-size:.7rem;margin-top:.15rem;flex-shrink:0}
+
+/* ── Multi-step form shell ── */
+.msform{
+  background:var(--surface-2);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:2.4rem;
+  position:relative;
+}
+
+/* Progress bar */
+.progress-bar{
+  background:rgba(255,255,255,.06);
+  border-radius:999px;height:3px;
+  margin-bottom:2.2rem;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt));
+  width:20%;transition:width .45s var(--ease);
+}
+.progress-label{
+  display:flex;justify-content:space-between;
+  font-size:.72rem;color:var(--muted);margin-bottom:.6rem;
+}
+
+/* Steps */
+.form-step{display:none}
+.form-step.active{display:block;animation:stepIn .4s var(--ease)}
+.step-title{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:.4rem}
+.step-sub{font-size:.85rem;color:var(--muted);font-weight:300;margin-bottom:1.6rem}
+
+/* Choice buttons (step 1 & 4) */
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.choice-btn{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.3rem 1rem;text-align:center;cursor:pointer;
+  font-family:var(--sans);font-size:.9rem;font-weight:400;color:var(--white);
+  background:rgba(255,255,255,.02);
+  transition:border-color .25s,background .25s,transform .2s;
+}
+.choice-btn:hover,.choice-btn.selected{
+  border-color:var(--gold);background:var(--gold-dim);transform:translateY(-2px);
+}
+.choice-btn .choice-icon{display:block;font-size:1.6rem;margin-bottom:.5rem}
+.choice-grid-3{grid-template-columns:1fr}
+@media(min-width:400px){.choice-grid-3{grid-template-columns:repeat(3,1fr)}}
+
+/* Input / Select */
+.field{margin-bottom:1.4rem}
+.field label{display:block;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.field input,.field select{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--white);font-family:var(--sans);font-size:.93rem;
+  padding:.85rem 1rem;outline:none;
+  transition:border-color .25s,box-shadow .25s;
+  -webkit-appearance:none;appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8880' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 1rem center;
+  padding-right:2.5rem;cursor:pointer;
+}
+.field select option{background:var(--surface-2);color:var(--white)}
+.field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(198,161,76,.12)}
+.field input::placeholder{color:var(--muted)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:400px){.field-row{grid-template-columns:1fr}}
+.field-error{font-size:.76rem;color:#ff6b6b;margin-top:.3rem;display:none}
+.field.has-error input,.field.has-error select{border-color:#ff6b6b}
+.field.has-error .field-error{display:block}
+
+/* Form nav */
+.form-nav{display:flex;gap:.9rem;margin-top:1.6rem}
+.btn-back{
+  background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border);
+  border-radius:999px;padding:.85rem 1.6rem;font-size:.86rem;font-weight:400;
+  transition:background .2s,color .2s;
+}
+.btn-back:hover{background:rgba(255,255,255,.09);color:var(--white)}
+
+/* Success */
+.form-success{display:none;text-align:center;padding:2rem 0}
+.form-success h3{font-family:var(--serif);font-size:1.6rem;font-weight:400;margin-bottom:.8rem}
+.form-success p{font-size:.9rem;color:var(--muted);font-weight:300;line-height:1.7}
+.success-icon{font-size:3rem;margin-bottom:1rem}
+
+/* ====================================================================
+   PLANES / PRICING
+   ==================================================================== */
+#planes{background:var(--bg)}
+.planes-grid{
+  display:grid;grid-template-columns:1fr;gap:1.4rem;
+  max-width:860px;margin-inline:auto;
+}
+@media(min-width:640px){.planes-grid{grid-template-columns:1fr 1fr}}
+
+.plan-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:2.2rem 2rem;
+  display:flex;flex-direction:column;gap:1.5rem;
+  position:relative;overflow:hidden;
+  transition:border-color .35s,transform .35s,box-shadow .35s;
+}
+.plan-card.featured{border-color:var(--border-gold);background:var(--surface-2)}
+.plan-badge{
+  position:absolute;top:1.3rem;right:1.3rem;
+  font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--gold);color:var(--bg);
+  padding:.3rem .8rem;border-radius:999px;
+}
+.plan-card:hover{transform:translateY(-6px);box-shadow:0 24px 58px rgba(0,0,0,.45)}
+.plan-card.featured:hover{box-shadow:0 24px 58px rgba(198,161,76,.2)}
+
+.plan-name{font-size:.78rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.plan-price{
+  font-family:var(--serif);
+  font-size:clamp(2.4rem,5vw,3.2rem);
+  font-weight:400;color:var(--white);line-height:1;
+}
+.plan-price sub{font-family:var(--sans);font-size:1rem;font-weight:300;color:var(--muted);vertical-align:middle}
+.plan-price sup{font-family:var(--sans);font-size:1rem;font-weight:300;color:var(--muted);vertical-align:top;margin-top:.6rem;display:inline-block}
+
+.plan-divider{height:1px;background:var(--border)}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:.8rem}
+.plan-features li{
+  display:flex;align-items:flex-start;gap:.7rem;
+  font-size:.87rem;font-weight:300;line-height:1.5;color:rgba(245,244,240,.82);
+}
+.plan-features li .chk{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--gold-dim);border:1px solid var(--border-gold);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:.05rem;font-size:.6rem;color:var(--gold);
+}
+.plan-note{font-size:.78rem;font-weight:300;color:var(--muted);font-style:italic;margin-top:-.5rem}
+
+/* ====================================================================
+   CTA FINAL
+   ==================================================================== */
+#cta-final{
+  background:var(--surface);position:relative;overflow:hidden;
+}
+#cta-final::before{
+  content:'';position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=50&auto=format&fit=crop') center/cover no-repeat;
+  opacity:.06;
+}
+#cta-final::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(198,161,76,.07) 0%,transparent 65%);
+}
+.cta-inner{
+  position:relative;z-index:1;
+  text-align:center;max-width:700px;margin-inline:auto;
+  padding:clamp(5rem,11vw,9rem) 0;
+}
+.cta-inner .tag{display:inline-flex}
+.cta-headline{
+  font-family:var(--serif);
+  font-size:clamp(2rem,4.8vw,3.6rem);
+  font-weight:400;line-height:1.1;
+  margin-bottom:1.3rem;
+}
+.cta-headline em{font-style:italic;color:var(--gold-lt)}
+.cta-divider{width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:2rem auto}
+.cta-body{font-size:.97rem;font-weight:300;line-height:1.75;color:rgba(245,244,240,.65);margin-bottom:2.6rem}
+.cta-note{font-size:.78rem;color:var(--muted);margin-top:1.2rem;letter-spacing:.03em}
+
+/* ====================================================================
+   FOOTER
+   ==================================================================== */
+footer{
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  padding:2.8rem 0;
+  text-align:center;
+}
+.footer-logo{font-family:var(--serif);font-size:1.35rem;font-weight:500;margin-bottom:1rem;display:block}
+.footer-logo span{color:var(--gold)}
+.footer-links{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:1.8rem;
+  font-size:.78rem;color:var(--muted);margin-bottom:1.5rem;
+}
+.footer-links a:hover{color:var(--white)}
+.footer-copy{font-size:.74rem;color:rgba(138,136,128,.4)}
+
+/* ====================================================================
+   KEYFRAMES
+   ==================================================================== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes fadeIn {from{opacity:0}to{opacity:1}}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(62,207,110,.45)}50%{box-shadow:0 0 0 7px rgba(62,207,110,0)}}
+@keyframes wireAnim{0%,100%{opacity:.7;transform:scaleY(1)}50%{opacity:.2;transform:scaleY(.55)}}
+@keyframes stepIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+
+/* ====================================================================
+   WHATSAPP FLOATING BUTTON
+   ==================================================================== */
+.wa-float{
+  position:fixed;bottom:1.8rem;right:1.8rem;z-index:800;
+  display:flex;align-items:center;gap:.65rem;
+  background:#25d366;color:#fff;
+  padding:.78rem 1.3rem .78rem .9rem;
+  border-radius:999px;
+  box-shadow:0 8px 28px rgba(37,211,102,.45);
+  font-size:.84rem;font-weight:500;
+  cursor:pointer;
+  transition:transform .28s var(--ease),box-shadow .28s var(--ease),padding .28s var(--ease);
+  text-decoration:none;
+  overflow:hidden;
+  max-width:56px;
+}
+.wa-float:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 36px rgba(37,211,102,.58);
+  max-width:220px;
+  padding:.78rem 1.3rem .78rem .9rem;
+}
+.wa-float svg{flex-shrink:0;width:26px;height:26px}
+.wa-label{
+  white-space:nowrap;overflow:hidden;
+  opacity:0;max-width:0;
+  transition:opacity .25s .05s,max-width .28s var(--ease);
+}
+.wa-float:hover .wa-label{opacity:1;max-width:160px}
+@keyframes waPop{
+  0%{transform:scale(0) translateY(20px);opacity:0}
+  70%{transform:scale(1.1)}
+  100%{transform:scale(1) translateY(0);opacity:1}
+}
+.wa-float{animation:waPop .55s .8s var(--ease-spring) both}
+
+/* ====================================================================
+   FAQ SECTION
+   ==================================================================== */
+#faq{background:var(--surface)}
+.faq-grid{
+  max-width:760px;margin-inline:auto;
+  display:flex;flex-direction:column;gap:.8rem;
+}
+.faq-item{
+  background:var(--surface-2);
+  border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;
+  transition:border-color .3s;
+}
+.faq-item.open{border-color:var(--border-gold)}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.3rem 1.6rem;cursor:pointer;
+  font-size:.95rem;font-weight:400;line-height:1.4;
+  gap:1rem;
+  user-select:none;
+}
+.faq-q:hover{color:var(--gold-lt)}
+.faq-icon{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--border-gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:var(--gold);
+  transition:transform .3s var(--ease),background .3s;
+}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--gold-dim)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s var(--ease),padding .3s;
+  font-size:.88rem;font-weight:300;line-height:1.72;color:var(--muted);
+  padding:0 1.6rem;
+}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:1.4rem}
+.faq-a a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     WHATSAPP FLOATING BUTTON
+     ================================================================ -->
+<a class="wa-float" href="https://wa.me/525646728078?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20el%20sistema%20de%20captaci%C3%B3n%20digital%20para%20mi%20inmobiliaria." target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.67 4.61 1.832 6.5L4 29l7.697-1.805A12.94 12.94 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3z" fill="#fff" fill-opacity=".15"/>
+    <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.67 4.61 1.832 6.5L4 29l7.697-1.805A12.94 12.94 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M11.5 12.5c.3.7 1.1 2.3 2.2 3.4 1.1 1.1 2.8 2 3.6 2.3.3.1.7 0 .9-.3l.8-1c.2-.3.6-.3.9-.1l2.5 1.4c.3.2.4.6.2.9-.5.9-1.6 2.1-2.8 2.1-1.8 0-5.2-1.5-7.3-3.6-2.1-2.1-3.3-5.1-3.3-6.8 0-1.1 1-2.1 1.9-2.5.3-.1.7 0 .9.3l1.4 2c.2.3.1.7-.1.9l-1 .9c-.2.2-.2.5-.1.8z" fill="#fff"/>
+  </svg>
+  <span class="wa-label">Escríbenos ahora</span>
+</a>
+
+<!-- ================================================================
+     MOBILE MENU
+     ================================================================ -->
+<div class="mob-menu" id="mobMenu" role="dialog" aria-label="Menú principal">
+  <a href="#como"       onclick="closeMob()">Cómo Funciona</a>
+  <a href="#dif"        onclick="closeMob()">Diferenciadores</a>
+  <a href="#planes"     onclick="closeMob()">Planes</a>
+  <a href="#formulario" onclick="closeMob()">Solicitar Demo</a>
+</div>
+
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<header id="hdr">
+  <div class="container hdr-inner">
+    <div class="logo">Prop<span>Leads</span></div>
+    <nav class="hdr-nav" aria-label="Navegación principal">
+      <a href="#como">Cómo Funciona</a>
+      <a href="#dif">Diferenciadores</a>
+      <a href="#planes">Planes</a>
+    </nav>
+    <a href="#formulario" class="btn btn-primary hdr-cta">Solicitar Diagnóstico</a>
+    <button class="ham" id="hamBtn" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<section id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="live"></span>
+        Sistema activo · Ciudad de México · DEMO
+      </div>
+      <h1 class="hero-h1">
+        Convierte Visitas en<br>
+        <em>Prospectos Calificados</em><br>
+        En Menos de 7 Días
+      </h1>
+      <p class="hero-sub">
+        Implementamos el sistema digital que tu inmobiliaria necesita para captar compradores y vendedores reales, sin depender exclusivamente de portales ni de la suerte.
+      </p>
+      <div class="hero-actions">
+        <a href="#formulario" class="btn btn-primary btn-lg">
+          Solicitar Diagnóstico
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#como" class="btn btn-outline btn-lg">Ver Cómo Funciona</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-cue">
+    <span>Descubrir</span>
+    <div class="scroll-wire"></div>
+  </div>
+</section>
+
+<!-- ================================================================
+     STATS
+     ================================================================ -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-row stagger">
+      <div>
+        <div class="stat-val">7</div>
+        <div class="stat-lbl">Días hasta primeros leads</div>
+      </div>
+      <div>
+        <div class="stat-val">3×</div>
+        <div class="stat-lbl">Más prospectos calificados</div>
+      </div>
+      <div>
+        <div class="stat-val">↓60%</div>
+        <div class="stat-lbl">Costo vs. portales</div>
+      </div>
+      <div>
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Datos propios</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     CÓMO FUNCIONA — PROCESS
+     ================================================================ -->
+<section id="como">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="tag">El Proceso</span>
+      <h2 class="sec-title">Activamos Tu Sistema<br><em>En 5 Pasos Claros</em></h2>
+      <p class="sec-sub">Sin complejidades. Sin meses de espera. Un proceso probado que tu equipo puede entender desde el día uno.</p>
+    </div>
+    <div class="process-wrap">
+      <div class="proc-item reveal">
+        <div class="proc-dot"><div class="proc-dot-inner"></div></div>
+        <div class="proc-card">
+          <div class="proc-step">Paso 01 · Día 1</div>
+          <h3>Diagnóstico Estratégico</h3>
+          <p>Analizamos tu mercado, zonas objetivo, perfil del comprador y competencia. Definimos el ángulo de campaña que conectará con tu cliente ideal.</p>
+        </div>
+      </div>
+      <div class="proc-item reveal">
+        <div class="proc-dot"><div class="proc-dot-inner"></div></div>
+        <div class="proc-card">
+          <div class="proc-step">Paso 02 · Días 2–3</div>
+          <h3>Diseño de Landing</h3>
+          <p>Construimos tu página de captación con tu identidad visual, formulario multi-paso inteligente y copy orientado a conversión.</p>
+        </div>
+      </div>
+      <div class="proc-item reveal">
+        <div class="proc-dot"><div class="proc-dot-inner"></div></div>
+        <div class="proc-card">
+          <div class="proc-step">Paso 03 · Días 3–4</div>
+          <h3>Configuración de Campañas</h3>
+          <p>Creamos audiencias segmentadas en Meta Ads por zona, rango de ingreso y comportamiento inmobiliario. Instalamos el pixel y conectamos WhatsApp.</p>
+        </div>
+      </div>
+      <div class="proc-item reveal">
+        <div class="proc-dot"><div class="proc-dot-inner"></div></div>
+        <div class="proc-card">
+          <div class="proc-step">Paso 04 · Día 5</div>
+          <h3>Activación</h3>
+          <p>Encendemos las campañas. En 48 horas ya tienes los primeros leads llegando a tu WhatsApp con zona, presupuesto y urgencia pre-capturados.</p>
+        </div>
+      </div>
+      <div class="proc-item reveal">
+        <div class="proc-dot"><div class="proc-dot-inner"></div></div>
+        <div class="proc-card">
+          <div class="proc-step">Paso 05 · Días 6–7</div>
+          <h3>Optimización Inicial</h3>
+          <p>Revisamos los primeros datos, ajustamos segmentación y capacitamos a tu equipo de ventas para responder y cerrar en tiempo récord.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     DIFERENCIADORES
+     ================================================================ -->
+<section id="dif">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="tag">Tecnología Incluida</span>
+      <h2 class="sec-title">Todo Lo Que Necesitas<br><em>En Un Solo Sistema</em></h2>
+      <p class="sec-sub">Cada componente fue diseñado para trabajar en conjunto y convertir el tráfico en prospectos con intención real de compra o venta.</p>
+    </div>
+    <div class="dif-grid stagger">
+      <div class="dif-card">
+        <div class="dif-icon">📋</div>
+        <h3>Formularios Multi-Paso</h3>
+        <p>Capturamos datos de forma progresiva. El prospecto avanza paso a paso sin sentirse interrogado, aumentando la tasa de completado hasta 3 veces.</p>
+        <span class="dif-badge">Conversión</span>
+      </div>
+      <div class="dif-card">
+        <div class="dif-icon">🎯</div>
+        <h3>Captación de Presupuesto</h3>
+        <p>Preguntamos zona, rango de inversión y urgencia antes de que el lead llegue a tu equipo. Solo hablas con quien realmente puede comprar.</p>
+        <span class="dif-badge">Calificación</span>
+      </div>
+      <div class="dif-card">
+        <div class="dif-icon">💬</div>
+        <h3>Integración WhatsApp</h3>
+        <p>El lead llega en segundos con su perfil completo. Tu asesor sabe quién es, qué busca y cuánto puede pagar antes de responder el primer mensaje.</p>
+        <span class="dif-badge">Velocidad</span>
+      </div>
+      <div class="dif-card">
+        <div class="dif-icon">📊</div>
+        <h3>Pixel y Seguimiento</h3>
+        <p>Cada clic, formulario y conversión queda registrado. Sabemos qué campaña genera más cierres, no solo más clicks.</p>
+        <span class="dif-badge">Datos</span>
+      </div>
+      <div class="dif-card">
+        <div class="dif-icon">🔄</div>
+        <h3>Remarketing Básico</h3>
+        <p>Reimpactamos a quienes visitaron tu landing pero no convirtieron. Aumenta el volumen de leads sin aumentar el presupuesto publicitario.</p>
+        <span class="dif-badge">Plan Optimizado</span>
+      </div>
+      <div class="dif-card">
+        <div class="dif-icon">🏗️</div>
+        <h3>Base de Datos Propia</h3>
+        <p>Cada lead queda en tu CRM. Nadie te puede quitar tu audiencia. Tu activo digital crece con cada campaña que activas.</p>
+        <span class="dif-badge">Propiedad tuya</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FORMULARIO MULTI-PASO
+     ================================================================ -->
+<section id="formulario">
+  <div class="container">
+    <div class="form-grid">
+
+      <!-- Left: info -->
+      <div class="form-info reveal-l">
+        <span class="tag">Diagnóstico Gratuito</span>
+        <h2>¿Cuántos Prospectos Estás<br><em>Dejando Ir Cada Mes?</em></h2>
+        <p>En 2 minutos analizamos tu operación inmobiliaria y te decimos exactamente qué sistema de captación digital funcionaría para tu perfil. Sin costo, sin compromiso.</p>
+        <ul class="form-perks">
+          <li>Diagnóstico adaptado a tu tipo de operación (agencia o asesor independiente)</li>
+          <li>Estimación real de costo por lead según tu zona y segmento</li>
+          <li>Plan de acción concreto para los primeros 7 días</li>
+          <li>Respuesta personalizada en menos de 24 h hábiles</li>
+        </ul>
+        <!-- Dynamic insight box — updated by JS -->
+        <div id="formInsight" style="display:none;margin-top:1.6rem;padding:1.2rem 1.4rem;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:var(--radius);font-size:.86rem;font-weight:300;line-height:1.65;color:rgba(245,244,240,.85)">
+          <span style="color:var(--gold);font-weight:500;display:block;margin-bottom:.3rem;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase">💡 Para tu perfil</span>
+          <span id="formInsightText"></span>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="reveal-r">
+        <div class="msform" id="msform">
+          <!-- Progress -->
+          <div class="progress-label">
+            <span id="stepLabel">Paso 1 de 5</span>
+            <span id="stepPct">20%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <!-- ══ STEP 1: Tipo de operador ══════════════════════════ -->
+          <div class="form-step active" id="step1">
+            <h3 class="step-title">¿Cómo describes tu operación?</h3>
+            <p class="step-sub">El sistema se configura diferente según tu modelo de negocio.</p>
+            <div class="choice-grid">
+              <button class="choice-btn" data-value="agencia" onclick="selectChoice(this,'perfil')">
+                <span class="choice-icon">🏢</span>
+                Agencia o Inmobiliaria
+              </button>
+              <button class="choice-btn" data-value="asesor" onclick="selectChoice(this,'perfil')">
+                <span class="choice-icon">🧑‍💼</span>
+                Asesor Independiente
+              </button>
+              <button class="choice-btn" data-value="franquicia" onclick="selectChoice(this,'perfil')">
+                <span class="choice-icon">🔗</span>
+                Franquicia Inmobiliaria
+              </button>
+              <button class="choice-btn" data-value="desarrollador" onclick="selectChoice(this,'perfil')">
+                <span class="choice-icon">🏗️</span>
+                Desarrollador / Constructor
+              </button>
+            </div>
+            <div class="form-nav">
+              <button class="btn btn-primary" style="margin-left:auto" onclick="nextStep(1)">
+                Continuar
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══ STEP 2: Situación actual (condicional por perfil) ══ -->
+          <div class="form-step" id="step2">
+            <h3 class="step-title" id="s2title">¿Cómo estás generando prospectos hoy?</h3>
+            <p class="step-sub">Selecciona todas las que apliquen. Puedes elegir más de una.</p>
+
+            <!-- Versión AGENCIA / FRANQUICIA / DESARROLLADOR -->
+            <div id="s2-multi" class="choice-multi" style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem">
+              <button class="choice-btn" data-value="portales" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">🌐</span>
+                Portales (Lamudi, Inmuebles24…)
+              </button>
+              <button class="choice-btn" data-value="referidos" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">🤝</span>
+                Referidos y boca en boca
+              </button>
+              <button class="choice-btn" data-value="redes" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">📱</span>
+                Redes sociales orgánicas
+              </button>
+              <button class="choice-btn" data-value="ads" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">📣</span>
+                Publicidad pagada (Meta/Google)
+              </button>
+              <button class="choice-btn" data-value="nada" onclick="toggleMulti(this,'canales')" style="grid-column:1/-1">
+                <span class="choice-icon">😶</span>
+                Sin sistema definido aún
+              </button>
+            </div>
+
+            <!-- Versión ASESOR INDEPENDIENTE -->
+            <div id="s2-asesor" style="display:none;grid-template-columns:1fr 1fr;gap:.9rem">
+              <button class="choice-btn" data-value="portales" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">🌐</span>
+                Publicando en portales
+              </button>
+              <button class="choice-btn" data-value="referidos" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">🤝</span>
+                Referidos de clientes pasados
+              </button>
+              <button class="choice-btn" data-value="instagram" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">📸</span>
+                Instagram / TikTok personal
+              </button>
+              <button class="choice-btn" data-value="whatsapp" onclick="toggleMulti(this,'canales')">
+                <span class="choice-icon">💬</span>
+                Difusiones de WhatsApp
+              </button>
+              <button class="choice-btn" data-value="nada" onclick="toggleMulti(this,'canales')" style="grid-column:1/-1">
+                <span class="choice-icon">😶</span>
+                Todavía no tengo sistema
+              </button>
+            </div>
+
+            <div class="form-nav">
+              <button class="btn-back" onclick="prevStep(2)">← Atrás</button>
+              <button class="btn btn-primary" style="margin-left:auto" onclick="nextStep(2)">
+                Continuar
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══ STEP 3: Volumen / tamaño (condicional) ════════════ -->
+          <div class="form-step" id="step3">
+
+            <!-- Agencia: número de asesores -->
+            <div id="s3-agencia" style="display:none">
+              <h3 class="step-title">¿Cuántos asesores tiene tu equipo?</h3>
+              <p class="step-sub">Esto define la escala y el plan recomendado para tu operación.</p>
+              <div class="choice-grid" style="grid-template-columns:repeat(2,1fr)">
+                <button class="choice-btn" data-value="1-3" onclick="selectChoice(this,'equipo')">
+                  <span class="choice-icon">👤</span>
+                  1 – 3 asesores
+                </button>
+                <button class="choice-btn" data-value="4-10" onclick="selectChoice(this,'equipo')">
+                  <span class="choice-icon">👥</span>
+                  4 – 10 asesores
+                </button>
+                <button class="choice-btn" data-value="11-30" onclick="selectChoice(this,'equipo')">
+                  <span class="choice-icon">🏆</span>
+                  11 – 30 asesores
+                </button>
+                <button class="choice-btn" data-value="30+" onclick="selectChoice(this,'equipo')">
+                  <span class="choice-icon">🏢</span>
+                  Más de 30
+                </button>
+              </div>
+            </div>
+
+            <!-- Franquicia: número de oficinas -->
+            <div id="s3-franquicia" style="display:none">
+              <h3 class="step-title">¿Cuántas oficinas o sucursales tienes?</h3>
+              <p class="step-sub">Cada sucursal puede tener su propio sistema de captación.</p>
+              <div class="choice-grid" style="grid-template-columns:repeat(2,1fr)">
+                <button class="choice-btn" data-value="1" onclick="selectChoice(this,'oficinas')">
+                  <span class="choice-icon">🏠</span>
+                  1 oficina
+                </button>
+                <button class="choice-btn" data-value="2-4" onclick="selectChoice(this,'oficinas')">
+                  <span class="choice-icon">🏘️</span>
+                  2 – 4 oficinas
+                </button>
+                <button class="choice-btn" data-value="5-10" onclick="selectChoice(this,'oficinas')">
+                  <span class="choice-icon">🏙️</span>
+                  5 – 10 oficinas
+                </button>
+                <button class="choice-btn" data-value="10+" onclick="selectChoice(this,'oficinas')">
+                  <span class="choice-icon">🌆</span>
+                  Más de 10
+                </button>
+              </div>
+            </div>
+
+            <!-- Asesor: cierres mensuales -->
+            <div id="s3-asesor" style="display:none">
+              <h3 class="step-title">¿Cuántas operaciones cierras al mes en promedio?</h3>
+              <p class="step-sub">Tu ritmo actual nos ayuda a proyectar tu potencial de crecimiento.</p>
+              <div class="choice-grid" style="grid-template-columns:repeat(3,1fr)">
+                <button class="choice-btn" data-value="0-1" onclick="selectChoice(this,'cierres')">
+                  <span class="choice-icon">🌱</span>
+                  0 – 1 al mes
+                </button>
+                <button class="choice-btn" data-value="2-4" onclick="selectChoice(this,'cierres')">
+                  <span class="choice-icon">📈</span>
+                  2 – 4 al mes
+                </button>
+                <button class="choice-btn" data-value="5+" onclick="selectChoice(this,'cierres')">
+                  <span class="choice-icon">🚀</span>
+                  5 o más al mes
+                </button>
+              </div>
+            </div>
+
+            <!-- Desarrollador: proyectos activos -->
+            <div id="s3-desarrollador" style="display:none">
+              <h3 class="step-title">¿Cuántos proyectos activos tienes?</h3>
+              <p class="step-sub">Cada proyecto puede tener su propia landing y campaña de captación.</p>
+              <div class="choice-grid" style="grid-template-columns:repeat(3,1fr)">
+                <button class="choice-btn" data-value="1" onclick="selectChoice(this,'proyectos')">
+                  <span class="choice-icon">🏠</span>
+                  1 proyecto
+                </button>
+                <button class="choice-btn" data-value="2-4" onclick="selectChoice(this,'proyectos')">
+                  <span class="choice-icon">🏘️</span>
+                  2 – 4
+                </button>
+                <button class="choice-btn" data-value="5+" onclick="selectChoice(this,'proyectos')">
+                  <span class="choice-icon">🌆</span>
+                  5 o más
+                </button>
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <button class="btn-back" onclick="prevStep(3)">← Atrás</button>
+              <button class="btn btn-primary" style="margin-left:auto" onclick="nextStep(3)">
+                Continuar
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══ STEP 4: Segmento + urgencia (condicional) ══════════ -->
+          <div class="form-step" id="step4">
+            <h3 class="step-title">¿En qué segmento operas principalmente?</h3>
+            <p class="step-sub">Esto define el costo por lead y la estrategia de segmentación óptima.</p>
+            <div class="choice-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:1.4rem">
+              <button class="choice-btn" data-value="residencial-medio" onclick="segmentoSelected(this)">
+                <span class="choice-icon">🏡</span>
+                Residencial Medio<br><small style="font-size:.72rem;color:var(--muted)">$1M – $4M MXN</small>
+              </button>
+              <button class="choice-btn" data-value="residencial-plus" onclick="segmentoSelected(this)">
+                <span class="choice-icon">🏙️</span>
+                Residencial Plus<br><small style="font-size:.72rem;color:var(--muted)">$4M – $10M MXN</small>
+              </button>
+              <button class="choice-btn" data-value="premium-lujo" onclick="segmentoSelected(this)">
+                <span class="choice-icon">💎</span>
+                Premium / Lujo<br><small style="font-size:.72rem;color:var(--muted)">+$10M MXN</small>
+              </button>
+              <button class="choice-btn" data-value="mixto" onclick="segmentoSelected(this)">
+                <span class="choice-icon">🔀</span>
+                Mixto / Varios<br><small style="font-size:.72rem;color:var(--muted)">Diferentes rangos</small>
+              </button>
+            </div>
+
+            <!-- Urgencia — aparece al seleccionar segmento -->
+            <div id="urgenciaBlock" style="opacity:0;max-height:0;overflow:hidden;transition:opacity .45s,max-height .45s var(--ease)">
+              <p style="font-size:.88rem;font-weight:500;margin-bottom:.8rem;color:rgba(245,244,240,.75)">¿Cuándo quieres activar tu sistema?</p>
+              <div class="choice-grid" style="grid-template-columns:repeat(3,1fr)">
+                <button class="choice-btn" data-value="ya" onclick="selectChoice(this,'urgencia')">
+                  <span class="choice-icon">⚡</span>
+                  Lo antes posible
+                </button>
+                <button class="choice-btn" data-value="mes" onclick="selectChoice(this,'urgencia')">
+                  <span class="choice-icon">📅</span>
+                  Este mes
+                </button>
+                <button class="choice-btn" data-value="evaluando" onclick="selectChoice(this,'urgencia')">
+                  <span class="choice-icon">🔍</span>
+                  Evaluando opciones
+                </button>
+              </div>
+            </div>
+
+            <div class="form-nav" style="margin-top:1.4rem">
+              <button class="btn-back" onclick="prevStep(4)">← Atrás</button>
+              <button class="btn btn-primary" style="margin-left:auto" onclick="nextStep(4)">
+                Continuar
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══ STEP 5: Contacto (condicional por perfil) ══════════ -->
+          <div class="form-step" id="step5">
+            <h3 class="step-title">¿A dónde enviamos tu diagnóstico?</h3>
+            <p class="step-sub" id="s5sub">Respuesta personalizada por WhatsApp en menos de 24 h.</p>
+
+            <div class="field" id="field-nombre">
+              <label for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" placeholder="Ej. Carlos Mendoza" autocomplete="name"/>
+              <div class="field-error">Por favor ingresa tu nombre</div>
+            </div>
+
+            <!-- Nombre empresa — se oculta para asesor independiente -->
+            <div class="field" id="field-empresa">
+              <label for="empresa" id="empresaLabel">Nombre de tu inmobiliaria / proyecto</label>
+              <input type="text" id="empresa" placeholder="Ej. Grupo Inmobiliario XYZ"/>
+            </div>
+
+            <div class="field" id="field-zona">
+              <label for="zona">Zona o alcaldía donde operas</label>
+              <input type="text" id="zona" placeholder="Ej. Polanco, Santa Fe, Naucalpan…"/>
+              <div class="field-error">Indica la zona donde operas</div>
+            </div>
+
+            <div class="field-row">
+              <div class="field" id="field-whatsapp">
+                <label for="whatsapp">WhatsApp</label>
+                <input type="tel" id="whatsapp" placeholder="55 1234 5678" autocomplete="tel"/>
+                <div class="field-error">Número requerido</div>
+              </div>
+              <div class="field" id="field-email">
+                <label for="email">Email de trabajo</label>
+                <input type="email" id="email" placeholder="tu@negocio.com" autocomplete="email"/>
+                <div class="field-error">Email inválido</div>
+              </div>
+            </div>
+
+            <!-- Resumen dinámico -->
+            <div id="formSummary" style="margin-top:1rem;padding:1rem 1.2rem;background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:var(--radius-sm);font-size:.82rem;font-weight:300;line-height:1.65;color:rgba(245,244,240,.8)">
+              <span style="color:var(--gold);font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.4rem">✦ Tu diagnóstico incluirá</span>
+              <span id="summaryText"></span>
+            </div>
+
+            <div class="form-nav">
+              <button class="btn-back" onclick="prevStep(5)">← Atrás</button>
+              <button class="btn btn-primary btn-full" onclick="submitForm()">
+                Solicitar Mi Diagnóstico
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- ══ SUCCESS ══════════════════════════════════════════ -->
+          <div class="form-success" id="formSuccess">
+            <div class="success-icon">✅</div>
+            <h3 id="successTitle">¡Diagnóstico Enviado!</h3>
+            <p id="successMsg">Recibimos tu información. Un especialista te contactará por WhatsApp en menos de 24 h con el análisis personalizado para tu operación.</p>
+          </div>
+        </div><!-- /.msform -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     PLANES / PRICING
+     ================================================================ -->
+<section id="planes">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="tag">Planes</span>
+      <h2 class="sec-title">Elige El Sistema<br><em>Que Tu Negocio Necesita</em></h2>
+      <p class="sec-sub">Ambos planes incluyen implementación completa. La diferencia está en la profundidad de la automatización y las herramientas de remarketing.</p>
+    </div>
+    <div class="planes-grid stagger">
+
+      <!-- Plan Base -->
+      <div class="plan-card">
+        <div>
+          <div class="plan-name">Sistema Base</div>
+          <div class="plan-price">
+            <sup>$</sup>8,000<sub> MXN</sub>
+          </div>
+        </div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="chk">✦</span> Landing premium con tu marca</li>
+          <li><span class="chk">✦</span> Formulario multi-paso (5 pasos)</li>
+          <li><span class="chk">✦</span> Pixel de Facebook configurado</li>
+          <li><span class="chk">✦</span> Integración WhatsApp Business</li>
+          <li><span class="chk">✦</span> Configuración inicial de campañas</li>
+          <li><span class="chk">✦</span> Reporte semanal de métricas</li>
+          <li><span class="chk">✦</span> Capacitación de 1 sesión</li>
+        </ul>
+        <p class="plan-note">Ideal para inmobiliarias que están iniciando su canal digital propio.</p>
+        <a href="#formulario" class="btn btn-outline btn-full">
+          Empezar con Base
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- Plan Optimizado -->
+      <div class="plan-card featured">
+        <div class="plan-badge">Más Elegido</div>
+        <div>
+          <div class="plan-name">Sistema Optimizado</div>
+          <div class="plan-price">
+            <sup>$</sup>12,000<sub> MXN</sub>
+          </div>
+        </div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="chk">✦</span> Todo lo del Plan Base</li>
+          <li><span class="chk">✦</span> Lógica condicional avanzada en formulario</li>
+          <li><span class="chk">✦</span> Remarketing básico (audiencias personalizadas)</li>
+          <li><span class="chk">✦</span> Creativos base para campañas (3 formatos)</li>
+          <li><span class="chk">✦</span> Segmentación por zona y perfil de ingreso</li>
+          <li><span class="chk">✦</span> A/B test de mensajes clave</li>
+          <li><span class="chk">✦</span> 2 sesiones de capacitación + soporte 30 días</li>
+        </ul>
+        <p class="plan-note">Para inmobiliarias que quieren resultados medibles desde la primera semana.</p>
+        <a href="#formulario" class="btn btn-primary btn-full">
+          Empezar con Optimizado
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     CTA FINAL
+     ================================================================ -->
+<section id="cta-final">
+  <div class="container">
+    <div class="cta-inner">
+      <span class="tag reveal">Sin Riesgo · Sin Contratos Largos</span>
+      <h2 class="cta-headline reveal">
+        Si Una Sola Propiedad Se Vende,<br>
+        <em>El Sistema Se Paga Solo.</em>
+      </h2>
+      <div class="cta-divider reveal"></div>
+      <p class="cta-body reveal">
+        Una propiedad promedio en CDMX genera comisiones de $20,000 a $150,000 MXN. El sistema cuesta $8,000. La matemática es simple: no hay razón para seguir dependiendo solo de portales.
+      </p>
+      <div class="reveal">
+        <a href="#formulario" class="btn btn-primary btn-lg">
+          Quiero Mi Sistema Inmobiliario
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <p class="cta-note reveal">📍 Ciudad de México · Cupos limitados por mes · Respuesta en 24 h</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FAQ
+     ================================================================ -->
+<section id="faq">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="tag">Preguntas Frecuentes</span>
+      <h2 class="sec-title">Todo Lo Que Necesitas<br><em>Saber Antes de Empezar</em></h2>
+    </div>
+    <div class="faq-grid stagger">
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿En cuánto tiempo veo los primeros resultados?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">El sistema se activa en 7 días hábiles desde que iniciamos. En las primeras 48 horas de campaña activa ya empiezan a llegar los primeros leads calificados a tu WhatsApp. La velocidad real depende del presupuesto publicitario que destines a Meta Ads.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿El pago incluye factura?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Por el momento no emitimos facturas. Trabajamos con transferencia bancaria o depósito, y emitimos comprobante de pago. Si esto puede ser un tema para ti, menciónalo en tu diagnóstico y lo platicamos — queremos encontrar la mejor forma de trabajar juntos.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Trabajan fuera de Ciudad de México?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Sí — operamos en toda la República Mexicana. El sistema es 100% digital, así que no importa si estás en Monterrey, Guadalajara, Cancún, Mérida o cualquier otra ciudad. Solo necesitamos una llamada de diagnóstico para entender tu mercado local y adaptar la estrategia.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Pueden trabajar con clientes fuera de México?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Si estás en otro país y te interesa el sistema, con gusto lo conversamos. Los procesos y condiciones pueden variar según el mercado y la plataforma publicitaria disponible en tu región. Escríbenos directamente por <a href="https://wa.me/525646728078" target="_blank">WhatsApp</a> y lo analizamos juntos.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Necesito tener presupuesto publicitario adicional?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Sí. El costo del sistema ($8,000 o $12,000 MXN) cubre la implementación, landing, configuración y capacitación. El presupuesto de pauta en Meta Ads (Facebook/Instagram) es aparte y va directo a la plataforma. Para empezar recomendamos al menos $3,000–$5,000 MXN mensuales en pauta.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          ¿Qué pasa si los leads no son lo que esperaba?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">Incluimos una optimización inicial al día 7 donde revisamos los datos reales y ajustamos segmentación, mensajes y formulario. El sistema está diseñado para aprender con cada semana de datos. Además, el formulario multi-paso pre-califica a cada prospecto antes de que llegue a ti, lo que reduce significativamente los leads poco serios.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+  <div class="container">
+    <a class="footer-logo" href="#">Prop<span>Leads</span></a>
+    <div class="footer-links">
+      <a href="#como">Cómo Funciona</a>
+      <a href="#dif">Diferenciadores</a>
+      <a href="#planes">Planes</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://wa.me/525646728078" target="_blank">WhatsApp</a>
+    </div>
+    <p class="footer-copy">© 2025 PropLeads · Sistema Digital para Inmobiliarias · CDMX · Sitio DEMO</p>
+  </div>
+</footer>
+
+<!-- ================================================================
+     JAVASCRIPT
+     ================================================================ -->
+<script>
+/* ── Header scroll ── */
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => {
+  hdr.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+/* ── Hero Ken Burns ── */
+window.addEventListener('load', () => {
+  document.getElementById('hero').classList.add('loaded');
+});
+
+/* ── Hamburger / mobile menu ── */
+const hamBtn   = document.getElementById('hamBtn');
+const mobMenu  = document.getElementById('mobMenu');
+hamBtn.addEventListener('click', () => {
+  const isOpen = mobMenu.classList.toggle('open');
+  hamBtn.classList.toggle('open', isOpen);
+  hamBtn.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+function closeMob() {
+  mobMenu.classList.remove('open');
+  hamBtn.classList.remove('open');
+  hamBtn.setAttribute('aria-expanded', false);
+  document.body.style.overflow = '';
+}
+
+/* ── Scroll reveal (Intersection Observer) ── */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -55px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .stagger')
+  .forEach(el => revealObs.observe(el));
+
+/* ── Parallax hero ── */
+const heroBg = document.getElementById('heroBg');
+let rafPending = false;
+window.addEventListener('scroll', () => {
+  if (!rafPending) {
+    requestAnimationFrame(() => {
+      if (window.scrollY < window.innerHeight * 1.5)
+        heroBg.style.transform = `scale(1) translateY(${window.scrollY * 0.26}px)`;
+      rafPending = false;
+    });
+    rafPending = true;
+  }
+}, { passive: true });
+
+
+/* ================================================================
+   MULTI-STEP FORM — CONDITIONAL LOGIC ENGINE
+   ================================================================ */
+let currentStep = 1;
+const TOTAL_STEPS = 5;
+const fd = {
+  perfil: '', canales: [], segmento: '', urgencia: '',
+  equipo: '', cierres: '', proyectos: '', oficinas: '',
+  nombre: '', empresa: '', zona: '', whatsapp: '', email: ''
+};
+
+/* ── Progress bar ── */
+function updateProgress(step) {
+  const pct = Math.round((step / TOTAL_STEPS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepLabel').textContent = `Paso ${step} de ${TOTAL_STEPS}`;
+  document.getElementById('stepPct').textContent = pct + '%';
+}
+
+/* ── Show a step with slide animation ── */
+function showStep(n) {
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  const t = document.getElementById('step' + n);
+  if (t) t.classList.add('active');
+  updateProgress(n);
+  currentStep = n;
+}
+
+/* ── Single-select choice buttons ── */
+function selectChoice(btn, field) {
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  fd[field] = btn.dataset.value;
+}
+
+/* ── Multi-select toggle (step 2) ── */
+function toggleMulti(btn, field) {
+  btn.classList.toggle('selected');
+  const val = btn.dataset.value;
+  if (val === 'nada') {
+    // Exclusive: deselect all others
+    btn.parentElement.querySelectorAll('.choice-btn').forEach(b => {
+      if (b !== btn) b.classList.remove('selected');
+    });
+    fd[field] = ['nada'];
+  } else {
+    // Remove 'nada' if selecting something real
+    btn.parentElement.querySelectorAll('[data-value="nada"]').forEach(b => b.classList.remove('selected'));
+    if (btn.classList.contains('selected')) {
+      fd[field] = [...fd[field].filter(v => v !== 'nada' && v !== val), val];
+    } else {
+      fd[field] = fd[field].filter(v => v !== val);
+    }
+  }
+}
+
+/* ── Flash error on choice group ── */
+function flashChoices(selector) {
+  document.querySelectorAll(selector).forEach(b => {
+    b.style.borderColor = 'rgba(255,107,107,.45)';
+    setTimeout(() => b.style.borderColor = '', 1300);
+  });
+}
+
+/* ── Error helpers ── */
+function clrErr(id) { const el = document.getElementById('field-' + id); if (el) el.classList.remove('has-error'); }
+function setErr(id) { const el = document.getElementById('field-' + id); if (el) el.classList.add('has-error'); }
+
+/* ── Conditional UI: adapt step 2, 3, 5 based on perfil ── */
+function applyConditionalUI() {
+  const p = fd.perfil;
+
+  /* Step 2: which channel grid to show */
+  const s2multi  = document.getElementById('s2-multi');
+  const s2asesor = document.getElementById('s2-asesor');
+  if (p === 'asesor') {
+    s2multi.style.display = 'none'; s2asesor.style.display = 'grid';
+  } else {
+    s2multi.style.display = 'grid'; s2asesor.style.display = 'none';
+  }
+  // Reset canales when switching
+  fd.canales = [];
+  document.querySelectorAll('#step2 .choice-btn').forEach(b => b.classList.remove('selected'));
+
+  /* Step 3: which size block to show */
+  const s3ag  = document.getElementById('s3-agencia');
+  const s3fr  = document.getElementById('s3-franquicia');
+  const s3as  = document.getElementById('s3-asesor');
+  const s3de  = document.getElementById('s3-desarrollador');
+  [s3ag, s3fr, s3as, s3de].forEach(el => el.style.display = 'none');
+  if (p === 'agencia')      s3ag.style.display = 'block';
+  else if (p === 'franquicia')  s3fr.style.display = 'block';
+  else if (p === 'asesor')      s3as.style.display = 'block';
+  else if (p === 'desarrollador') s3de.style.display = 'block';
+
+  /* Step 5: hide empresa field for independent asesor */
+  const empRow = document.getElementById('field-empresa');
+  if (p === 'asesor') {
+    empRow.style.display = 'none';
+  } else {
+    empRow.style.display = 'block';
+    const lbl = document.getElementById('empresaLabel');
+    if (p === 'desarrollador') lbl.textContent = 'Nombre del proyecto o empresa';
+    else if (p === 'franquicia') lbl.textContent = 'Nombre de la franquicia / oficina';
+    else lbl.textContent = 'Nombre de tu inmobiliaria';
+  }
+
+  /* Left panel insight */
+  const insightMap = {
+    agencia:      'Para agencias, el sistema escala por cada asesor. Proyectamos el costo por lead y la segmentación según el número de asesores en tu equipo.',
+    asesor:       'Para asesores independientes, el sistema funciona como tu propio departamento de marketing: genera leads calificados sin depender de la agencia.',
+    franquicia:   'Para franquicias, cada oficina puede tener su landing y campaña independiente con reportes centralizados por sede.',
+    desarrollador:'Para desarrolladores, diseñamos una landing por proyecto con formularios que pre-califican financiamiento y urgencia de compra.'
+  };
+  const insightEl = document.getElementById('formInsight');
+  const insightTxt = document.getElementById('formInsightText');
+  if (insightMap[p]) {
+    insightTxt.textContent = insightMap[p];
+    insightEl.style.display = 'block';
+  }
+}
+
+/* ── Step 4: reveal urgencia block after selecting segmento ── */
+function segmentoSelected(btn) {
+  selectChoice(btn, 'segmento');
+  const block = document.getElementById('urgenciaBlock');
+  block.style.opacity = '1';
+  block.style.maxHeight = '300px';
+  block.style.pointerEvents = 'auto';
+}
+
+/* ── Step 5: build dynamic summary ── */
+function buildSummary() {
+  const perfilLabels = { agencia:'Agencia inmobiliaria', asesor:'Asesor independiente', franquicia:'Franquicia', desarrollador:'Desarrollador' };
+  const segLabels = { 'residencial-medio':'Residencial Medio ($1M–$4M)', 'residencial-plus':'Residencial Plus ($4M–$10M)', 'premium-lujo':'Premium / Lujo (+$10M)', 'mixto':'Segmento mixto' };
+  const urgLabels = { ya:'Lo antes posible', mes:'Este mes', evaluando:'Evaluando opciones' };
+
+  const lines = [];
+  if (fd.perfil) lines.push(`Perfil: <strong>${perfilLabels[fd.perfil] || fd.perfil}</strong>`);
+  if (fd.segmento) lines.push(`Segmento: <strong>${segLabels[fd.segmento] || fd.segmento}</strong>`);
+  if (fd.urgencia) lines.push(`Activación: <strong>${urgLabels[fd.urgencia] || fd.urgencia}</strong>`);
+
+  /* plan recommendation */
+  let planRec = 'Sistema Base ($8,000 MXN)';
+  if (fd.equipo === '11-30' || fd.equipo === '30+' || fd.oficinas === '5-10' || fd.oficinas === '10+' || fd.proyectos === '5+') {
+    planRec = 'Sistema Optimizado ($12,000 MXN) — recomendado para tu escala';
+  } else if (fd.segmento === 'premium-lujo') {
+    planRec = 'Sistema Optimizado ($12,000 MXN) — recomendado para segmento lujo';
+  }
+  lines.push(`Plan sugerido: <strong>${planRec}</strong>`);
+
+  document.getElementById('summaryText').innerHTML = lines.join(' · ');
+
+  // Personalize step 5 subtitle
+  const s5sub = document.getElementById('s5sub');
+  if (fd.urgencia === 'ya') s5sub.textContent = 'Perfecto — te contactamos hoy mismo para arrancar tu sistema.';
+  else if (fd.urgencia === 'mes') s5sub.textContent = 'Genial — tu diagnóstico y propuesta llegarán en menos de 24 h.';
+  else s5sub.textContent = 'Sin problema — te enviamos la información para que evalúes con calma.';
+
+  // Personalize success message
+  document.getElementById('successTitle').textContent = fd.perfil === 'asesor' ? '¡Listo, te contactamos pronto!' : '¡Diagnóstico en camino!';
+  document.getElementById('successMsg').textContent = `Recibimos tu información, ${fd.nombre || ''}. Un especialista te escribirá por WhatsApp en menos de 24 h con el diagnóstico personalizado para tu ${fd.perfil === 'desarrollador' ? 'proyecto' : 'operación'}.`;
+}
+
+/* ── Validation per step ── */
+function validateStep(step) {
+  let ok = true;
+
+  if (step === 1) {
+    if (!fd.perfil) { flashChoices('#step1 .choice-btn'); ok = false; }
+    else applyConditionalUI();
+  }
+
+  if (step === 2) {
+    if (!fd.canales.length) { flashChoices('#step2 .choice-btn:not([style*="none"])'); ok = false; }
+  }
+
+  if (step === 3) {
+    const p = fd.perfil;
+    const hasVol = (p === 'agencia' && fd.equipo) ||
+                   (p === 'asesor'  && fd.cierres) ||
+                   (p === 'franquicia' && fd.oficinas) ||
+                   (p === 'desarrollador' && fd.proyectos);
+    if (!hasVol) { flashChoices('#step3 .choice-btn'); ok = false; }
+  }
+
+  if (step === 4) {
+    if (!fd.segmento) { flashChoices('#step4 .choice-grid:first-child .choice-btn'); ok = false; }
+    else if (!fd.urgencia) { flashChoices('#urgenciaBlock .choice-btn'); ok = false; }
+  }
+
+  if (step === 5) {
+    const nom = document.getElementById('nombre').value.trim();
+    const wa  = document.getElementById('whatsapp').value.trim();
+    const em  = document.getElementById('email').value.trim();
+    const zo  = document.getElementById('zona').value.trim();
+    const rx  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!nom) { setErr('nombre');   ok = false; } else { fd.nombre = nom;   clrErr('nombre'); }
+    if (!zo)  { setErr('zona');     ok = false; } else { fd.zona   = zo;    clrErr('zona'); }
+    if (!wa)  { setErr('whatsapp'); ok = false; } else { fd.whatsapp = wa;  clrErr('whatsapp'); }
+    if (!rx.test(em)) { setErr('email'); ok = false; } else { fd.email = em; clrErr('email'); }
+    if (fd.perfil !== 'asesor') {
+      const emp = document.getElementById('empresa').value.trim();
+      fd.empresa = emp; // optional field
+    }
+  }
+  return ok;
+}
+
+/* ── Navigation ── */
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  if (from === 4) buildSummary();
+  if (from < TOTAL_STEPS) showStep(from + 1);
+}
+function prevStep(from) {
+  if (from > 1) showStep(from - 1);
+}
+
+/* ── Submit → WhatsApp redirect ── */
+function submitForm() {
+  if (!validateStep(5)) return;
+
+  const perfilLabels  = { agencia:'Agencia/Inmobiliaria', asesor:'Asesor Independiente', franquicia:'Franquicia', desarrollador:'Desarrollador' };
+  const segLabels     = { 'residencial-medio':'Residencial Medio ($1M–$4M)', 'residencial-plus':'Residencial Plus ($4M–$10M)', 'premium-lujo':'Premium/Lujo (+$10M)', 'mixto':'Mixto/Varios' };
+  const urgLabels     = { ya:'Lo antes posible', mes:'Este mes', evaluando:'Evaluando opciones' };
+  const volKey = fd.perfil === 'agencia' ? fd.equipo : fd.perfil === 'asesor' ? fd.cierres : fd.perfil === 'franquicia' ? fd.oficinas : fd.proyectos;
+
+  const msg = [
+    '🏡 *Nuevo Diagnóstico PropLeads*',
+    '',
+    `👤 *Nombre:* ${fd.nombre}`,
+    fd.empresa ? `🏢 *Empresa:* ${fd.empresa}` : '',
+    `📍 *Zona:* ${fd.zona}`,
+    `📱 *WhatsApp:* ${fd.whatsapp}`,
+    `📧 *Email:* ${fd.email}`,
+    '',
+    `🔖 *Perfil:* ${perfilLabels[fd.perfil] || fd.perfil}`,
+    `📊 *Canales actuales:* ${(fd.canales||[]).join(', ') || '—'}`,
+    `📐 *Volumen:* ${volKey || '—'}`,
+    `💰 *Segmento:* ${segLabels[fd.segmento] || fd.segmento}`,
+    `⚡ *Urgencia:* ${urgLabels[fd.urgencia] || fd.urgencia}`,
+  ].filter(Boolean).join('\n');
+
+  const waUrl = `https://wa.me/525646728078?text=${encodeURIComponent(msg)}`;
+
+  // Show success screen first, then redirect
+  const msform = document.getElementById('msform');
+  msform.querySelector('.progress-bar').style.display = 'none';
+  msform.querySelector('.progress-label').style.display = 'none';
+  document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
+  document.getElementById('successTitle').textContent = fd.perfil === 'asesor' ? '¡Listo, te contactamos pronto!' : '¡Diagnóstico en camino!';
+  document.getElementById('successMsg').textContent = `Recibimos tu información${fd.nombre ? ', ' + fd.nombre : ''}. En un momento abriremos WhatsApp para finalizar tu diagnóstico. Si no abre automáticamente, escríbenos al +52 56 4672 8078.`;
+  const succ = document.getElementById('formSuccess');
+  succ.style.display = 'block';
+  succ.style.animation = 'stepIn .5s var(--ease) forwards';
+
+  // Open WhatsApp after brief delay so user sees success screen
+  setTimeout(() => { window.open(waUrl, '_blank'); }, 900);
+
+  console.log('📩 PropLeads B2B — Lead:', fd);
+}
+
+/* ── FAQ accordion ── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ── Init ── */
+showStep(1);
+// Show step 3 placeholder text until perfil is set
+document.getElementById('s3-agencia').style.display = 'block';
+</script>
+</body>
+</html>
